@@ -1,75 +1,54 @@
-/* Custom CSS for Medical Landing Page */
-
-/* General Styles */
 body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
     margin: 0;
     padding: 0;
-}
-
-header {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.hero {
-    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background-image: url('img/fondo.jpg'); /* Cambia a tu imagen */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     color: #fff;
-    padding: 50px 0;
 }
 
-.hero h2 {
-    font-size: 2.5rem;
-    font-weight: bold;
+
+
+/* cabeza texto */
+
+.header-text {
+
+
+
+color: white;
+
+
 }
 
-/* Section Styles */
-section {
-    padding: 40px 0;
-}
 
-#services .fa-solid {
-    color: #00f2fe;
-}
+/* Estilos para los botones interactivos */
+        .btn-interactivo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px white;
+            transition: transform 0.3s;
+            text-decoration: none;
+            color: inherit;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
 
-#services h4 {
-    margin-top: 10px;
-    font-weight: bold;
-}
+        /* Efecto hover para botones interactivos */
+        .btn-interactivo:hover {
+            transform: translateY(-5px);
+            text-decoration: none;
+        }
 
-blockquote {
-    border-left: 5px solid #4facfe;
-    padding-left: 10px;
-    font-style: italic;
-    color: #555;
-}
-
-#contact h5 {
-    font-size: 1.1rem;
-    font-weight: bold;
-}
-
-#contact form .form-control {
-    border-radius: 0.5rem;
-}
-
-footer {
-    background: #222;
-    color: #fff;
-    text-align: center;
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-    .hero h2 {
-        font-size: 2rem;
-    }
-
-    #services .col-md-4 {
-        margin-bottom: 20px;
-    }
-
-    #contact .row {
-        flex-direction: column;
-    }
-}
+        /* Iconos dentro de los botones */
+        .btn-interactivo i {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
