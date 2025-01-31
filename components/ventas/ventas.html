@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contable</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-black text-white font-italic">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full bg-gray-800 bg-opacity-75 backdrop-blur-md shadow-md">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <a href="#" class="text-white text-lg font-bold tracking-wide">Momotea 1.1 </a>
+            <div class="space-x-4">
+                <a href="../../index.html" class="text-white hover:text-blue-400">Inicio</a>
+                <a href="../../components/clientes/clientes.html" class="text-white hover:text-blue-400">Clientes</a>
+                <a href="../../components/stok/stock.html" class="text-white hover:text-blue-400">Stock</a>
+
+            </div>
+        </div>
+    </nav>
+
+    <br><br><br>
+    <main class="container mx-auto mt-4">
+        <section class="bg-black text-white">
+            <p class="inline-flex gap-2">
+                <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="toggleCollapse()">Productos</button>
+            </p>
+            <div id="collapseExample" class="hidden">
+                <div class="bg-white text-black p-4 rounded">
+                    <img src="Data/img/A/A-2.jpg" class="max-w-xs border-4 border-white rounded" alt="Product Image">
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-xl font-semibold mt-4">Registrar</h2>
+            <form id="ventaForm" class="space-y-4">
+                <div>
+                    <label for="producto" class="block">Producto:</label>
+                    <input type="text" id="producto" class="w-full p-2 border rounded text-black" required>
+                </div>
+                <div>
+                    <label for="cantidad" class="block">Cantidad:</label>
+                    <input type="number" id="cantidad" class="w-full p-2 border rounded text-black" required>
+                </div>
+                <div>
+                    <label for="precio" class="block">Precio:</label>
+                    <input type="number" id="precio" class="w-full p-2 border rounded text-black" required>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" id="flexCheckDefault" class="mr-2">
+                    <label for="flexCheckDefault">IVA 19%</label>
+                </div>
+                <button type="submit" class="bg-blue-500 px-4 py-2 text-white rounded">Guardar</button>
+            </form>
+        </section>
+
+        <section>
+            <h2 class="text-xl font-semibold mt-6">Tabla</h2>
+            <table class="w-full border-collapse border border-white mt-2">
+                <thead>
+                    <tr class="bg-black text-white">
+                        <th class="p-2 border">Producto</th>
+                        <th class="p-2 border">Cantidad</th>
+                        <th class="p-2 border">Precio</th>
+                        <th class="p-2 border">Total</th>
+                        <th class="p-2 border">Fecha</th>
+                        <th class="p-2 border">
+                            <label>Cliente:</label>
+                            <input type="text" class="w-full p-2 border rounded text-black">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="ventasTableBody"></tbody>
+                <tfoot>
+                    <tr class="bg-black text-white">
+                        <td colspan="5" class="p-2 border text-right">Gran Total:</td>
+                        <td class="p-2 border">
+                            <input type="text" id="Gran" class="w-full p-2 border rounded text-black">
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <section class="text-center mt-4">
+            <button id="exportButton" class="bg-blue-500 px-4 py-2 text-white rounded">Imagen</button>
+            <button type="button" class="bg-green-500 px-4 py-2 text-white rounded" onclick="exportarExcel()">Excel</button>
+        </section>
+    </main>
+
+    <footer class="text-center mt-5">
+        <p>&copy; Contable-2025 ✅</p>
+    </footer>
+
+    <script>
+        function toggleCollapse() {
+            document.getElementById('collapseExample').classList.toggle('hidden');
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.0/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.3.2/dist/html2canvas.min.js"></script>
+    <script src="code.js"></script>
+</body>
+</html>
