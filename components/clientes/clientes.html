@@ -4,97 +4,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Sistema de gestión de inventario eficiente y accesible.">
-    <title>Gestión de Inventario</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="clientes.css">
+    <title>momotea</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 
-<body>
+<body class="mt-14 bg-gray-100 text-gray-900 font-sans">
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg fixed-top bg-white shadow px-4 py-2">
-        <div class="container-fluid">
-            <a class="navbar-brand text-dark fw-bold fs-4" href="#">Gestión de Inventario</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Abrir menú de navegación">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-dark fw-semibold fs-5" href="#" id="navbarSections" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir menú de secciones">Secciones</a>
-                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow" aria-labelledby="navbarSections">
-                            <li><a class="dropdown-item" href="components/clientes.html">Clientes</a></li>
-                            <li><a class="dropdown-item" href="../../index.html">Inicio</a></li>
-                            <li><a class="dropdown-item" href="#">Caja</a></li>
-                            <li><a class="dropdown-item" href="#">Pedidos</a></li>
-                            <li><a class="dropdown-item" href="#">Afiliados</a></li>
-                            <li><a class="dropdown-item" href="#">Productos</a></li>
-                            <li><a class="dropdown-item" href="#">Ingresos</a></li>
-                            <li><a class="dropdown-item" href="#">Banco</a></li>
-                        </ul>
-                    </li>
-                </ul>
+    <nav class="fixed top-0 w-full bg-gray-800 bg-opacity-75 backdrop-blur-md shadow-md">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <a href="#" class="text-white text-lg font-bold tracking-wide">Momotea</a>
+            <div class="space-x-4">
+                <a href="../../index.html" class="text-white hover:text-blue-400">Inicio</a>
+                <a href="../../components/stok/stock.html" class="text-white hover:text-blue-400">Productos</a>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="container mt-5 pt-5">
-        <section class="mb-4">
-            <h2 class="h4 text-center fw-bold mb-4">Lista de Productos</h2>
-            <div id="productList" class="list-group border rounded" aria-live="polite" aria-label="Lista de productos disponibles"></div>
+    <main class="container mx-auto mt-10 p-6">
+        <section class="mb-6">
+            <h2 class="text-xl font-bold text-center mb-4">Lista de Productos</h2>
+            <div id="productList" class="bg-white shadow-md rounded p-4"></div>
         </section>
 
         <div class="text-center">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal" aria-label="Agregar un nuevo producto">
-                <i class="bi bi-plus-lg"></i> Agregar o Modificar
+            <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition" onclick="document.getElementById('addProductModal').classList.remove('hidden')">
+                &#43; Agregar o Modificar
             </button>
-        </div>
-
-        <!-- Modal Agregar Producto -->
-        <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addProductModalLabel">Agregar o Editar Producto</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="addProductForm" novalidate>
-                            <div class="form-group mb-3">
-                                <label for="productName" class="form-label">Nombre del Producto</label>
-                                <input type="text" id="productName" class="form-control" placeholder="Nombre del producto" required autocomplete="off" aria-required="true">
-                            </div>
-                            <div class="form-group mb-3">
-                                <label for="productImage" class="form-label">Seleccionar Imagen</label>
-                                <input type="file" id="productImage" class="form-control" accept="image/*" aria-label="Subir imagen del producto">
-                            </div>
-                            <div class="form-group mb-3">
-                                <label for="productLocation" class="form-label">Ubicación</label>
-                                <input type="text" id="productLocation" class="form-control" placeholder="Ubicación del producto" required autocomplete="off" aria-required="true">
-                            </div>
-                            <div class="form-group mb-3">
-                                <label for="productDescription" class="form-label">Descripción</label>
-                                <textarea id="productDescription" class="form-control" placeholder="Descripción breve del producto" required aria-required="true"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Guardar Producto</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
         </div>
     </main>
 
+    <!-- Modal Agregar Producto -->
+    <div id="addProductModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+        <div class="bg-white p-6 rounded shadow-md w-96">
+            <div class="flex justify-between items-center mb-4">
+                <h5 class="text-lg font-bold">Agregar o Editar Producto</h5>
+                <button onclick="document.getElementById('addProductModal').classList.add('hidden')" class="text-gray-500 hover:text-gray-800">&times;</button>
+            </div>
+            <form id="addProductForm">
+                <div class="mb-4">
+                    <label for="productName" class="block font-bold">Nombre del Producto</label>
+                    <input type="text" id="productName" class="w-full p-2 border rounded" placeholder="Nombre del producto" required>
+                </div>
+                <div class="mb-4">
+                    <label for="productImage" class="block font-bold">Seleccionar Imagen</label>
+                    <input type="file" id="productImage" class="w-full p-2 border rounded" accept="image/*">
+                </div>
+                <div class="mb-4">
+                    <label for="productLocation" class="block font-bold">Ubicación</label>
+                    <input type="text" id="productLocation" class="w-full p-2 border rounded" placeholder="Ubicación del producto" required>
+                </div>
+                <div class="mb-4">
+                    <label for="productDescription" class="block font-bold">Descripción</label>
+                    <textarea id="productDescription" class="w-full p-2 border rounded" placeholder="Descripción breve del producto" required></textarea>
+                </div>
+                <button type="submit" class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Guardar Producto</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Footer -->
-    <footer class="text-center py-4 bg-light mt-5 border-top">
-        <p class="mb-2">&copy; 2025 Momohause | <span class="fw-bold">Innovando para tu futuro</span></p>
-        <a href="#" class="text-decoration-none text-primary fw-bold">Eficiencia, organización, innovación</a>
+    <footer class="text-center py-6 bg-gray-800 text-white mt-10">
+        <p class="mb-2">&copy; 2025 Momohause | <span class="font-bold">Innovando para tu futuro</span></p>
+        <a href="#" class="text-blue-400 hover:underline">Eficiencia, organización, innovación</a>
     </footer>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="clientes.js"></script>
-</body>
+<script>// Módulo para gestión de productos
+    const ProductManager = (() => {
+        let products = JSON.parse(localStorage.getItem("products")) || [];
 
+        const generateId = () => `product_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+        const saveToLocalStorage = () => localStorage.setItem("products", JSON.stringify(products));
+
+        const render = (container) => {
+            if (!container) return console.error("Contenedor no encontrado");
+
+            container.innerHTML = products.length
+                ? products.map(generateProductCard).join("")
+                : '<p class="text-center text-muted">No hay productos disponibles.</p>';
+        };
+
+        const generateProductCard = (product) => `
+            <div class="product-card d-flex align-items-start pt-3" data-id="${product.id}">
+                <img src="${product.image || "placeholder.jpg"}" alt="Imagen de ${product.name}" 
+                    class="rounded-circle me-3" width="50" height="50" />
+                <div class="product-details w-100">
+                    <strong>${product.name}</strong>
+                    <p class="text-muted small mb-1">Ubicación: ${product.location}</p>
+                    <p class="text-muted small">${product.description}</p>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-danger delete-btn">Eliminar</button>
+                        <button class="btn btn-sm btn-primary edit-btn">Editar</button>
+                    </div>
+                </div>
+            </div>`;
+
+        const add = (product) => {
+            product.id = generateId();
+            products.push(product);
+            saveToLocalStorage();
+        };
+
+        const deleteProduct = (id) => {
+            products = products.filter((product) => product.id !== id);
+            saveToLocalStorage();
+            render(document.getElementById("productList"));
+        };
+
+        const getProductById = (id) => products.find((product) => product.id === id);
+
+        const edit = (id, updatedProduct) => {
+            const index = products.findIndex((product) => product.id === id);
+            if (index !== -1) {
+                products[index] = { ...products[index], ...updatedProduct };
+                saveToLocalStorage();
+            }
+        };
+
+        return { render, add, deleteProduct, getProductById, edit };
+    })();
+
+    // Módulo de Interfaz de Usuario (UI)
+    const UI = (() => {
+        const productList = document.getElementById("productList");
+        const addProductForm = document.getElementById("addProductForm");
+
+        const showNotification = (message, type) => {
+            const notification = document.createElement("div");
+            notification.className = `alert alert-${type} text-center fixed-top mx-auto mt-3`;
+            notification.style.maxWidth = "400px";
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        };
+
+        const validateInputs = (inputs) => inputs.every((input) => input.trim() !== "");
+
+        const handleFormSubmit = (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById("productName").value.trim();
+            const location = document.getElementById("productLocation").value.trim();
+            const description = document.getElementById("productDescription").value.trim();
+            const imageFile = document.getElementById("productImage")?.files[0];
+            const imageURL = imageFile ? URL.createObjectURL(imageFile) : "";
+
+            if (!validateInputs([name, location, description])) {
+                return showNotification("Completa todos los campos obligatorios.", "danger");
+            }
+
+            const product = { name, location, description, image: imageURL };
+
+            const formMode = addProductForm.dataset.mode;
+            const productId = addProductForm.dataset.productId;
+
+            if (formMode === "edit") {
+                ProductManager.edit(productId, product);
+                showNotification("Producto actualizado con éxito.", "success");
+                if (imageFile) URL.revokeObjectURL(imageURL); // Liberar recurso
+            } else {
+                ProductManager.add(product);
+                showNotification("Producto agregado con éxito.", "success");
+            }
+
+            ProductManager.render(productList);
+            addProductForm.reset();
+            resetFormMode();
+        };
+
+        const handleActionClick = (e) => {
+            const card = e.target.closest(".product-card");
+            if (!card) return;
+
+            const productId = card.dataset.id;
+
+            if (e.target.closest(".delete-btn")) {
+                ProductManager.deleteProduct(productId);
+                showNotification("Producto eliminado con éxito.", "success");
+            } else if (e.target.closest(".edit-btn")) {
+                const product = ProductManager.getProductById(productId);
+                populateFormForEdit(productId, product);
+            }
+        };
+
+        const populateFormForEdit = (id, product) => {
+            document.getElementById("productName").value = product.name;
+            document.getElementById("productLocation").value = product.location;
+            document.getElementById("productDescription").value = product.description;
+
+            addProductForm.dataset.mode = "edit";
+            addProductForm.dataset.productId = id;
+            document.getElementById("submitProductBtn").textContent = "Actualizar Producto";
+        };
+
+        const resetFormMode = () => {
+            addProductForm.dataset.mode = "add";
+            addProductForm.dataset.productId = "";
+            document.getElementById("submitProductBtn").textContent = "Agregar Producto";
+        };
+
+        const initEventListeners = () => {
+            addProductForm.addEventListener("submit", handleFormSubmit);
+            productList.addEventListener("click", handleActionClick);
+        };
+
+        return { initEventListeners, showNotification };
+    })();
+
+    document.addEventListener("DOMContentLoaded", () => {
+        UI.initEventListeners();
+        ProductManager.render(document.getElementById("productList"));
+    });
+</script>
+
+</body>
 </html>
