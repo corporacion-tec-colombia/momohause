@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Inventarios y Análisis de Ventas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans">
+    <!-- Encabezado -->
+    <header class="bg-blue-600 text-white py-6">
+        <div class="container mx-auto text-center">
+            <h1 class="text-3xl font-bold">Gestión de Inventarios y Análisis de Ventas</h1>
+            <p class="mt-2 text-lg">Una herramienta completa para gestionar tu inventario y ventas</p>
+        </div>
+    </header>
+
+    <!-- Gestión de Inventarios y Análisis de Ventas -->
+    <section class="py-12 bg-gray-100">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Análisis de Ventas -->
+            <div id="analisisVentas" class="bg-white p-6 rounded shadow">
+                <h2 class="text-2xl font-bold text-center mb-8">Análisis de Ventas</h2>
+                <div class="mb-4">
+                    <p>A continuación, se muestra el análisis de ventas basado en el inventario:</p>
+                    <div id="salesAnalysis">
+                        <!-- Aquí se mostrarán los datos de ventas -->
+                    </div>
+                    <div class="mt-6">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gestión de Inventarios -->
+            <div id="inventario" class="bg-white p-6 rounded shadow">
+                <h2 class="text-2xl font-bold text-center mb-8">Gestión de Productos</h2>
+                <div class="max-w-md mx-auto">
+                    <form id="inventoryForm">
+                        <div class="mb-4">
+                            <label for="productName" class="block font-bold mb-2">Nombre del Producto</label>
+                            <input type="text" id="productName" class="w-full border-gray-300 rounded p-2"
+                                placeholder="Ej. Martillo">
+                        </div>
+                        <div class="mb-4">
+                            <label for="productStock" class="block font-bold mb-2">Cantidad en Stock</label>
+                            <input type="number" id="productStock" class="w-full border-gray-300 rounded p-2"
+                                placeholder="Cantidad">
+                        </div>
+                        <div class="mb-4">
+                            <label for="productPrice" class="block font-bold mb-2">Precio por Producto</label>
+                            <input type="number" id="productPrice" class="w-full border-gray-300 rounded p-2"
+                                placeholder="Precio">
+                        </div>
+                        <div class="mb-4">
+                            <label for="expirationDate" class="block font-bold mb-2">Fecha de Vencimiento</label>
+                            <input type="date" id="expirationDate" class="w-full border-gray-300 rounded p-2">
+                        </div>
+                        <button type="submit"
+                            class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700">
+                            Agregar Producto
+                        </button>
+                    </form>
+                </div>
+
+                <h2 class="text-2xl font-bold text-center mb-8 mt-12">Inventario Actual</h2>
+                <div id="inventoryList" class="bg-white p-6 rounded shadow">
+                    <table class="w-full table-auto">
+                        <thead>
+                            <tr>
+                                <th class="text-left p-2">Producto</th>
+                                <th class="text-left p-2">Stock</th>
+                                <th class="text-left p-2">Precio</th>
+                                <th class="text-left p-2">Valor Total</th>
+                                <th class="text-left p-2">Fecha de Vencimiento</th>
+                                <th class="text-left p-2">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody">
+                            <!-- Se insertarán las filas aquí -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <button onclick="exportToExcel()"
+                        class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">Exportar a Excel</button>
+                    <button onclick="importFromExcel()"
+                        class="bg-yellow-600 text-white py-2 px-4 rounded hover:bg-yellow-700 ml-4">Importar desde
+                        Excel</button>
+                    <button onclick="exportToImage()"
+                        class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 ml-4">Exportar como
+                        Imagen</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pie de página -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2025 Gestión Empresarial. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        let inventoryList = JSON.parse(localStorage.getItem("inventoryList")) || [];
+
+        // Manejar la adición de productos al inventario
+        document.getElementById("inventoryForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById("productName").value;
+            const stock = parseInt(document.getElementById("productStock").value) || 0;
+            const price = parseFloat(document.getElementById("productPrice").value) || 0;
+            const expirationDate = document.getElementById("expirationDate").value;
+
+            if (name && stock > 0 && price > 0 && expirationDate) {
+                const product = { name, stock, price, expirationDate };
+                inventoryList.push(product);
+                localStorage.setItem("inventoryList", JSON.stringify(inventoryList));
+                displayInventory();
+                displaySalesAnalysis();
+                document.getElementById("inventoryForm").reset();
+            } else {
+                alert("Por favor, ingresa información válida para el producto.");
+            }
+        });
+
+        // Mostrar productos en la tabla
+        function displayInventory() {
+            const tableBody = document.getElementById("inventoryTableBody");
+            tableBody.innerHTML = ''; // Limpiar tabla
+
+            inventoryList.forEach((product, index) => {
+                const expirationStatus = getExpirationStatus(product.expirationDate);
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td class="p-2">${product.name}</td>
+                    <td class="p-2">${product.stock}</td>
+                    <td class="p-2">${product.price.toFixed(2)} COP</td>
+                    <td class="p-2">${(product.stock * product.price).toFixed(2)} COP</td>
+                    <td class="p-2">${product.expirationDate}</td>
+                    <td class="p-2">
+                        <span class="inline-block w-3 h-3 rounded-full ${expirationStatus.color}"></span>
+                        <button onclick="editProduct(${index})" class="bg-yellow-600 text-white px-4 py-1 rounded hover:bg-yellow-700">Modificar</button>
+                        <button onclick="deleteProduct(${index})" class="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 ml-2">Eliminar</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Función para determinar el estado de vencimiento
+        function getExpirationStatus(expirationDate) {
+            const now = new Date();
+            const expDate = new Date(expirationDate);
+            const diffDays = Math.floor((expDate - now) / (1000 * 60 * 60 * 24));
+
+            if (diffDays <= 0) {
+                return { color: 'bg-red-500' }; // Producto vencido
+            } else if (diffDays <= 7) {
+                return { color: 'bg-yellow-500' }; // Producto por vencer
+            } else {
+                return { color: 'bg-green-500' }; // Producto no vencido
+            }
+        }
+
+        // Función para mostrar análisis de ventas
+        function displaySalesAnalysis() {
+            const salesAnalysisContainer = document.getElementById("salesAnalysis");
+            let totalSales = 0;
+            let totalValue = 0;
+
+            inventoryList.forEach(product => {
+                totalSales += product.stock;
+                totalValue += product.stock * product.price;
+            });
+
+            salesAnalysisContainer.innerHTML = `
+                <p><strong>Total Productos Vendidos: </strong>${totalSales}</p>
+                <p><strong>Valor Total de Ventas: </strong>${totalValue.toFixed(2)} COP</p>
+            `;
+
+            // Crear la gráfica
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            const chartData = {
+                labels: inventoryList.map(product => product.name),
+                datasets: [{
+                    label: 'Ventas por Producto',
+                    data: inventoryList.map(product => product.stock * product.price),
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            };
+
+            const chartOptions = {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            };
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: chartOptions
+            });
+        }
+
+        // Editar un producto
+        function editProduct(index) {
+            const product = inventoryList[index];
+            document.getElementById("productName").value = product.name;
+            document.getElementById("productStock").value = product.stock;
+            document.getElementById("productPrice").value = product.price;
+            document.getElementById("expirationDate").value = product.expirationDate;
+
+            document.getElementById("inventoryForm").onsubmit = function (e) {
+                e.preventDefault();
+                const name = document.getElementById("productName").value;
+                const stock = parseInt(document.getElementById("productStock").value) || 0;
+                const price = parseFloat(document.getElementById("productPrice").value) || 0;
+                const expirationDate = document.getElementById("expirationDate").value;
+
+                if (name && stock > 0 && price > 0 && expirationDate) {
+                    inventoryList[index] = { name, stock, price, expirationDate };
+                    localStorage.setItem("inventoryList", JSON.stringify(inventoryList));
+                    displayInventory();
+                    displaySalesAnalysis();
+                    document.getElementById("inventoryForm").reset();
+                    document.getElementById("inventoryForm").onsubmit = originalFormSubmitHandler;
+                } else {
+                    alert("Por favor, ingresa información válida para el producto.");
+                }
+            };
+        }
+
+        // Eliminar un producto
+        function deleteProduct(index) {
+            if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
+                inventoryList.splice(index, 1);
+                localStorage.setItem("inventoryList", JSON.stringify(inventoryList));
+                displayInventory();
+                displaySalesAnalysis();
+            }
+        }
+
+        // Exportar a Excel
+        function exportToExcel() {
+            const ws = XLSX.utils.json_to_sheet(inventoryList);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Inventario");
+            XLSX.writeFile(wb, "inventario.xlsx");
+        }
+
+        // Importar desde Excel
+        function importFromExcel() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.xlsx';
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const data = event.target.result;
+                    const workbook = XLSX.read(data, { type: 'binary' });
+                    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const json = XLSX.utils.sheet_to_json(sheet);
+                    inventoryList = json;
+                    localStorage.setItem("inventoryList", JSON.stringify(inventoryList));
+                    displayInventory();
+                    displaySalesAnalysis();
+                };
+                reader.readAsBinaryString(file);
+            });
+            input.click();
+        }
+
+        // Exportar a imagen
+        function exportToImage() {
+            html2canvas(document.querySelector("#inventoryList")).then(canvas => {
+                canvas.toBlob(function (blob) {
+                    saveAs(blob, "inventario.png");
+                });
+            });
+        }
+
+        // Mostrar inventario inicial si existe en localStorage
+        displayInventory();
+        displaySalesAnalysis();
+    </script>
+</body>
+
+</html>
